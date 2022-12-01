@@ -194,7 +194,7 @@ def read_seed_playlists(path, seed_num):  # seed_num is Challenge # from challen
 
 def try_support(playlists, offset): # try different support until a candidate set is found
     try:
-        cand = gen_itemset(playlists, (.10/(offset+1)))
+        cand = gen_itemset(playlists, (.05/(offset+1)))
     except IndexError:
         return []
     return cand
