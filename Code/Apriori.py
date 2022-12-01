@@ -7,6 +7,42 @@ OUTPUT_COUNT = 1
 
 # Usage, run process_playlists_single_seed or process playlist and provide relevant pathways
 
+def create_submission(data_path, challenge_path):
+    final_playlists = [['team_info', 'CU Boulder Data-Mining', 'chris.lescinskas@gmail.com']]
+    dummy_playlist0 = gen_dummy_playlist_set0()
+    playlist_loader = []
+    pids = []
+    for i in range(9):
+        print("Len final: ",len( final_playlists))
+        pids.clear()
+        print("Seed num: ", i)
+        seeds, pids = read_seed_playlists("./Challenge_data", i)
+        seed_count = 0
+        if i == 0:
+            for i in range(1000):
+                playlist_loader.clear()
+                playlist_loader.append(pids[i])
+                for item in dummy_playlist0:
+                    playlist_loader.append(item)
+
+                final_playlists.append(playlist_loader)
+            print(final_playlists)
+        elif i != 2 and i != 0:
+            for i in range(1000):
+                print("Dummy playlist #: ", i)
+                playlist_loader.clear()
+                dummy_playlist = gen_dummy_playlist(seeds, seed_count)
+                playlist_loader.append(pids[i])
+                seed_count+=1
+                for item in dummy_playlist:
+                    playlist_loader.append(item)
+                final_playlists.append(playlist_loader)
+        elif i == 2:
+            mined_playlists = process_playlists_single_seed(data_path, challenge_path, i)
+            for item in mined_playlists:
+                final_playlists.append(item)
+    convert_csv(final_playlists)
+
 def process_playlists_single_seed(data_path, challenge_path, seed_num):  # Run on a single challenge dataset
     return_playlists = []
     track_loader = []
@@ -194,7 +230,7 @@ def convert_csv(playlists):
         write.writerow(playlists)
     OUTPUT_COUNT += 1
 
-def gen_dummy_playlist():
+def gen_dummy_playlist(seeds, seed_count):
     playlist_length = 0
     dummy_playlist = []
     filenames = os.listdir("./MPD_data")  # From MPD
@@ -210,30 +246,31 @@ def gen_dummy_playlist():
                 if len(dummy_playlist) == 500:
                     return dummy_playlist
                 track_name = track["track_uri"]
+                if track_name not in dummy_playlist and track_name not in seeds[seed_count]:
+                    dummy_playlist.append(track_name)
+                    playlist_length += 1
+
+def gen_dummy_playlist_set0():
+    playlist_length = 0
+    dummy_playlist = []
+    filenames = os.listdir("./MPD_data")  # From MPD
+    for filename in sorted(filenames):
+        if filename.startswith("mpd.slice.") and filename.endswith(".json"):  # From MPD
+            fullpath = os.sep.join(("./MPD_data", filename))  # From MPD
+            f = open(fullpath)  # From MPD
+            js = f.read()  # From MPD
+            f.close()  # From MPD
+            mpd_slice = json.loads(js)  # From MPD
+        for playlist in mpd_slice["playlists"]:
+            for track in playlist["tracks"]:
+                if len(dummy_playlist) == 500:
+                    return dummy_playlist
+                track_name = track["track_uri"]
+                print(len(dummy_playlist))
                 if track_name not in dummy_playlist:
                     dummy_playlist.append(track_name)
                     playlist_length += 1
 
 
-def create_submission(data_path, challenge_path):
-    final_playlists = [['team_info', 'CU Boulder Data-Mining', 'chris.lescinskas@gmail.com']]
-    dummy_playlist = gen_dummy_playlist()
-    playlist_loader = []
-    pids = []
-    for i in range(9):
-        print(final_playlists)
-        pids.clear()
-        seeds, pids = read_seed_playlists("./Challenge_data", i)
-        if i != 2:
-            for i in range(999):
-                playlist_loader.clear()
-                playlist_loader.append(pids[i])
-                for item in dummy_playlist:
-                    playlist_loader.append(item)
-                final_playlists.append(playlist_loader)
-        if i == 2:
-            mined_playlists = process_playlists_single_seed(data_path, challenge_path, i)
-            for item in mined_playlists:
-                final_playlists.append(item)
-    convert_csv(final_playlists)
+
 
