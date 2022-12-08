@@ -27,3 +27,4 @@ In this project, we imagine ourselves in the role of the streaming music provide
 https://o365coloradoedu-my.sharepoint.com/:v:/g/personal/brry3186_colorado_edu/EWrlAhjh7SVMkfTMpVKp9sgBvS8CAqwA1ye57OOY3k627w?e=Q4zuvp
 
 ## Link to Final Project Paper
+https://o365coloradoedu-my.sharepoint.com/:b:/g/personal/brry3186_colorado_edu/ETz15GZa9XtNpl-KslkEnggBDKRZMz8mxXyeVt-7_qN5WA?e=yakMRv
